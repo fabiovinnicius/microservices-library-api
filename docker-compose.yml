@@ -1,0 +1,103 @@
+services:
+
+  # ── Banco de dados de autores ──────────────────────────────────────
+  postgres-autores:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: db_autores
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - dados-autores:/var/lib/postgresql/data
+    networks:
+      - rede-biblioteca
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_autores"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Banco de dados de livros ───────────────────────────────────────
+  postgres-livros:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: db_livros
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - dados-livros:/var/lib/postgresql/data
+    networks:
+      - rede-biblioteca
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d db_livros"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Microsserviço de autores ───────────────────────────────────────
+  autor-ms:
+    build:
+      context: ./autor-ms/demo
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-autores:5432/db_autores
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - rede-biblioteca
+    depends_on:
+      postgres-autores:
+        condition: service_healthy
+
+  # ── Microsserviço de livros ────────────────────────────────────────
+  livro-ms:
+    build:
+      context: ./livro-ms/demo
+      dockerfile: Dockerfile
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres-livros:5432/db_livros
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: postgres
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    networks:
+      - rede-biblioteca
+    depends_on:
+      postgres-livros:
+        condition: service_healthy
+
+  # ── Frontend ───────────────────────────────────────────────────────
+  front-ms:
+    build:
+      context: ./front-ms/demo
+      dockerfile: Dockerfile
+    environment:
+      LIVRO_MS_URL: http://livro-ms:8081
+      AUTOR_MS_URL: http://autor-ms:8082
+    networks:
+      - rede-biblioteca
+    depends_on:
+      - autor-ms
+      - livro-ms
+
+  # ── API Gateway ────────────────────────────────────────────────────
+  nginx:
+    image: nginx:1.25
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - rede-biblioteca
+    depends_on:
+      - front-ms
+      - livro-ms
+      - autor-ms
+
+networks:
+  rede-biblioteca:
+    driver: bridge
+
+volumes:
+  dados-autores:
+  dados-livros:

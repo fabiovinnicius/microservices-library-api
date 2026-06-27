@@ -2,7 +2,7 @@
 
 Trabalho Final da disciplina de Desenvolvimento Web com Java do curso de Ciência da Computação (IFCE). O projeto consiste na refatoração de um sistema de cadastro de livros para uma arquitetura de microsserviços.
 
-## 🏗️ Visão Geral da Arquitetura
+## Visão Geral da Arquitetura
 
 A aplicação é orquestrada via Docker Compose e dividida em quatro containers principais:
 
@@ -11,7 +11,7 @@ A aplicação é orquestrada via Docker Compose e dividida em quatro containers 
 * **livro-ms:** Microsserviço independente (Spring Boot + REST + JPA) responsável pelo CRUD de Livros. Possui seu próprio banco de dados PostgreSQL (`postgres-livros`) e armazena apenas o `autorId` como referência lógica.
 * **autor-ms:** Microsserviço independente (Spring Boot + REST + JPA) responsável pelo CRUD de Autores. Opera com seu banco de dados isolado (`postgres-autores`) e não possui dependência dos demais serviços.
 
-## 📁 Estrutura do Projeto
+## Estrutura do Projeto
 
 ```text
 /

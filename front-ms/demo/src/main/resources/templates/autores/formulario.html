@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Autor</title>
+</head>
+<body>
+
+<h1>Cadastro de Autor</h1>
+
+<form th:action="${autor.id == null} ?
+                 @{/autores} :
+                 @{/autores/{id}(id=${autor.id})}"
+      th:object="${autor}"
+      method="post">
+
+    <label>Nome</label>
+    <br>
+
+    <input type="text"
+           th:field="*{nome}">
+    <br><br>
+
+    <label>Nacionalidade</label>
+    <br>
+
+    <input type="text"
+           th:field="*{nacionalidade}">
+    <br><br>
+
+    <label>Ano Nascimento</label>
+    <br>
+
+    <input type="number"
+           th:field="*{anoNascimento}">
+    <br><br>
+
+    <button type="submit">
+        Salvar
+    </button>
+
+</form>
+
+<br>
+
+<a href="/autores">
+    Voltar
+</a>
+
+</body>
+</html>

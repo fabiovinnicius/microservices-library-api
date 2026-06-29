@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Biblioteca</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            margin:40px;
+        }
+
+        nav{
+            margin-bottom:20px;
+        }
+
+        nav a{
+            margin-right:15px;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+
+        th,td{
+            border:1px solid #ccc;
+            padding:8px;
+        }
+
+        .sucesso{
+            background:#d4edda;
+            padding:10px;
+            margin-bottom:15px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/autores">Autores</a>
+    <a href="/livros">Livros</a>
+</nav>
+
+<div th:if="${sucesso}" class="sucesso">
+    <span th:text="${sucesso}"></span>
+</div>
+
+</body>
+</html>

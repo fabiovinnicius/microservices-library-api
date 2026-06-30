@@ -81,9 +81,9 @@
 <form method="get" th:action="@{/livros}">
     <label>Filtrar por disponibilidade:</label>
     <select name="disponivel" onchange="this.form.submit()">
-        <option value="">Todos</option>
-        <option value="true">Disponíveis</option>
-        <option value="false">Indisponíveis</option>
+        <option value="" th:selected="${disponivelSelecionado == null}">Todos</option>
+        <option value="true" th:selected="${disponivelSelecionado != null and disponivelSelecionado}">Disponíveis</option>
+        <option value="false" th:selected="${disponivelSelecionado != null and !disponivelSelecionado}">Indisponíveis</option>
     </select>
 </form>
 

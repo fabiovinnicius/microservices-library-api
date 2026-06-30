@@ -9,6 +9,9 @@ public class LivroDTO {
     private Boolean disponivel;
     private Long autorId;
 
+    // Não vem da API do livro-ms: é preenchido pelo front-ms para exibição nas telas
+    private String nomeAutor;
+
     public LivroDTO() {}
 
     public Long getId() {
@@ -57,5 +60,13 @@ public class LivroDTO {
 
     public void setAutorId(Long autorId) {
         this.autorId = autorId;
+    }
+
+    public String getNomeAutor() {
+        return nomeAutor;
+    }
+
+    public void setNomeAutor(String nomeAutor) {
+        this.nomeAutor = nomeAutor;
     }
 }

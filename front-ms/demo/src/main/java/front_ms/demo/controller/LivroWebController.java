@@ -7,11 +7,17 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import front_ms.demo.client.AutorClient;
 import front_ms.demo.client.LivroClient;
+import front_ms.demo.dto.AutorDTO;
 import front_ms.demo.dto.LivroDTO;
+
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/livros")
@@ -25,11 +31,27 @@ public class LivroWebController {
         this.autorClient = autorClient;
     }
 
-    // Lista todos os livros
+    // Lista todos os livros (com filtro opcional por disponibilidade)
     @GetMapping
-    public String listar(Model model) {
-        model.addAttribute("livros", livroClient.listar(null));
+    public String listar(@RequestParam(required = false) Boolean disponivel, Model model) {
+        List<LivroDTO> livros = livroClient.listar(disponivel);
+        preencherNomesAutores(livros);
+        model.addAttribute("livros", livros);
+        model.addAttribute("disponivelSelecionado", disponivel);
         return "livros/lista";
+    }
+
+    // Exibe o detalhe de um livro
+    @GetMapping("/{id}")
+    public String detalhe(@PathVariable Long id, Model model) {
+        LivroDTO livro = livroClient.buscarPorId(id);
+        if (livro == null) {
+            model.addAttribute("erro", "Livro não encontrado.");
+            return "livros/detalhe";
+        }
+        preencherNomesAutores(List.of(livro));
+        model.addAttribute("livro", livro);
+        return "livros/detalhe";
     }
 
     // Abre formulário de cadastro
@@ -96,6 +118,17 @@ public class LivroWebController {
         );
 
         return "redirect:/livros";
+    }
+
+    // Busca os autores e preenche o nome de cada um nos livros, pra exibição nas telas
+    private void preencherNomesAutores(List<LivroDTO> livros) {
+        List<AutorDTO> autores = autorClient.listarTodos();
+        Map<Long, String> nomesPorId = autores.stream()
+                .collect(Collectors.toMap(AutorDTO::getId, AutorDTO::getNome));
+
+        for (LivroDTO livro : livros) {
+            livro.setNomeAutor(nomesPorId.getOrDefault(livro.getAutorId(), "Desconhecido"));
+        }
     }
 
 }

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalhe do Livro</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            margin:40px;
+        }
+
+        nav{
+            margin-bottom:20px;
+        }
+
+        nav a{
+            margin-right:15px;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .erro{
+            background:#f8d7da;
+            padding:10px;
+            margin-bottom:15px;
+        }
+
+        .campo{
+            margin-bottom:12px;
+        }
+
+        .campo strong{
+            display:inline-block;
+            width:160px;
+        }
+
+        .badge-sim{
+            background:#28a745;
+            color:#fff;
+            padding:3px 8px;
+            border-radius:4px;
+        }
+
+        .badge-nao{
+            background:#dc3545;
+            color:#fff;
+            padding:3px 8px;
+            border-radius:4px;
+        }
+
+        .acoes{
+            margin-top:20px;
+        }
+
+        .acoes a{
+            margin-right:15px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/autores">Autores</a>
+    <a href="/livros">Livros</a>
+</nav>
+
+<div th:if="${erro}" class="erro">
+    <span th:text="${erro}"></span>
+</div>
+
+<div th:if="${livro != null}">
+
+    <h1 th:text="${livro.titulo}"></h1>
+
+    <div class="campo">
+        <strong>Gênero:</strong>
+        <span th:text="${livro.genero}"></span>
+    </div>
+
+    <div class="campo">
+        <strong>Ano de Publicação:</strong>
+        <span th:text="${livro.anoPublicacao}"></span>
+    </div>
+
+    <div class="campo">
+        <strong>Disponível:</strong>
+        <span th:if="${livro.disponivel}" class="badge-sim">Sim</span>
+        <span th:unless="${livro.disponivel}" class="badge-nao">Não</span>
+    </div>
+
+    <div class="campo">
+        <strong>Autor:</strong>
+        <span th:text="${livro.nomeAutor}"></span>
+    </div>
+
+    <div class="acoes">
+        <a th:href="@{/livros/{id}/editar(id=${livro.id})}">Editar</a>
+        <a href="/livros">Voltar para a lista</a>
+    </div>
+
+</div>
+
+</body>
+</html>

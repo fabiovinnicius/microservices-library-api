@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Livro</title>
+
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            margin:40px;
+        }
+
+        nav{
+            margin-bottom:20px;
+        }
+
+        nav a{
+            margin-right:15px;
+            text-decoration:none;
+            font-weight:bold;
+        }
+
+        .erro{
+            background:#f8d7da;
+            padding:10px;
+            margin-bottom:15px;
+        }
+
+        label{
+            display:block;
+            margin-top:10px;
+            font-weight:bold;
+        }
+
+        input, select{
+            padding:6px;
+            width:300px;
+            margin-top:4px;
+        }
+
+        button{
+            margin-top:20px;
+            padding:8px 16px;
+        }
+    </style>
+</head>
+<body>
+
+<nav>
+    <a href="/autores">Autores</a>
+    <a href="/livros">Livros</a>
+</nav>
+
+<div th:if="${erro}" class="erro">
+    <span th:text="${erro}"></span>
+</div>
+
+<h1 th:text="${livro.id} != null ? 'Editar Livro' : 'Novo Livro'"></h1>
+
+<form th:action="${livro.id} != null ? @{/livros/{id}(id=${livro.id})} : @{/livros}"
+      th:object="${livro}"
+      method="post">
+
+    <label>Título</label>
+    <input type="text" th:field="*{titulo}" required>
+
+    <label>Gênero</label>
+    <input type="text" th:field="*{genero}" required>
+
+    <label>Ano de Publicação</label>
+    <input type="number" th:field="*{anoPublicacao}" required>
+
+    <label>Disponível</label>
+    <select th:field="*{disponivel}">
+        <option value="true">Sim</option>
+        <option value="false">Não</option>
+    </select>
+
+    <label>Autor</label>
+    <select th:field="*{autorId}" required>
+        <option value="">Selecione um autor</option>
+        <option th:each="autor : ${autores}"
+                th:value="${autor.id}"
+                th:text="${autor.nome}">
+        </option>
+    </select>
+
+    <br>
+
+    <button type="submit" th:text="${livro.id} != null ? 'Atualizar' : 'Salvar'"></button>
+
+</form>
+
+</body>
+</html>
